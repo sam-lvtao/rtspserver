@@ -1,0 +1,186 @@
+/////////////////////////////////////////////////////////////////////
+CPU使用情况统计
+1：视频采集编码
+	1920*1920 + 1080*1080 + drwap                        10%~15%
+	1920*1920 + 640*360   + drwap                        10%~15% 
+	1920*1920 + 640*360   + drwap + 人形检测算法         35%~42%
+2: 音频采集
+	8K  PCM  || 8K  PCM + AAC编码                        0%~1%                
+	16K PCM  || 16K PCM + AAC编码                        0%~1%
+3：音频播放
+	8K  PCM  || 8K  PCM + AAC解码                        0%~1%  
+	16K PCM  || 16K PCM + AAC解码                        0%~1%  
+4：人形检测算法
+	640*360  检测间隔 3                                   20%
+5：回音消除
+	8K  PCM                                               15%
+	16K PCM                                               30%
+6：语言识别算法   
+	8K  PCM                                               10%   
+	16K PCM                                               10%   
+7：Live555 自身占用
+	未拉流                                                10%
+	拉流                                                  20%  
+8：总占用
+	42% + 20%  = 60%
+	42% + 20% + 回音消除【15%】 + 语音识别算法【10%】= 85%
+/////////////////////////////////////////////////////////////////////
+
+VATICS 问题列表：
+1:  LBP01      事件录像上传机制优化
+1： VSK05      长时间拉流 内存泄漏 时间戳问题 数据包发送累计 流程优化改善
+2： VSK05      整体架构层面
+5： VSK05      图像偏黄反馈vatics
+10: LVD05      熟悉 T31ZX SDK
+8： LTC03      最新UI改动
+9： LTC03      减灭效果改动
+
+
+10： 创建git仓库
+
+
+…or create a new repository on the command line
+echo "# rtspserver" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:sam-lvtao/rtspserver.git
+git push -u origin main
+…or push an existing repository from the command line
+git remote add origin git@github.com:sam-lvtao/rtspserver.git
+git branch -M main
+git push -u origin main
+…or import code from another repository
+You can initialize this repository with code from a Subversion, Mercurial, or TFS project.
+
+
+
+//7：Server组件
+DynamicRTSPServer -->  RTSPServerSupportingHTTPStreaming  --> RTSPServer  -->   GenericMediaServer  -->  Medium
+
+RTSPClientConnectionSupportingHTTPStreaming  -->  RTSPClientConnection  -->ClientConnection
+
+RTSPClientSession -->  ClientSession         
+   
+Real Time Streaming Protocol
+
+setBackgroundHandling
+
+moveSocketHandling
+
+
+./rtsps -c stream_server_config.ini &
+./streamer -D
+
+/////////////////////////////////////////////////////////////////////////////////////
+\\192.168.139.11\New-Public
+\\192.168.139.11\New-Public\VSK05\MP\V0.0.00.011\产测软件
+/////////////////////////////////////////////////////////////////////////////////////
+
+ftp://ftp.vatics.com/Release/M5S/V2.3/patch/Vienna-V2.3.10
+
+VMF_SetDebugMessageLevel(VMF_DML_ERROR);
+
+1:
+mount_as_tmpfs /etc/alsa
+mount_as_tmpfs /lib
+
+2:
+alsa.conf_plug Change the name "alsa.conf " and move the file to "/etc/alsa/".
+tutuConfigTX Move the file to "/etc/alsa/
+tutuConfigRX Move the file to "/etc/alsa/".
+libasound_module_pcm_vatics.3.4.0.0.so
+Change the name "libasound_module_pcm_vatics.so" and move the file to 
+"/lib/".
+
+3：
+./audio_server_mmap -d plug:vatics -C 0 -b 16000 -r 8000 -t 1 -A 1
+
+./audio_client_mmap -a SERVER_IP -d plug:vatics -C 0 -b 16000 -r 8000 -t 1 -A 1
+
+
+killall VSK05-TestDemo
+
+svn revert --depth=infinity /XXX
+
+svn commit -m "VSK05 主码流次码流支持drawp算法" 
+
+echo $LD_LIBRARY_PATH
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/mnt
+LD_LIBRARY_PATH=/mnt/
+
+export LD_LIBRARY_PATH=/mnt/flash/vienna/lib
+
+export LD_LIBRARY_PATH=/mnt/flash/vienna
+
+./LHW01 -profile.path /mnt/flash/vienna/ipccfg/SkyProfileConfiguration.xml
+
+./streamer_msg_sender -C 0 -s 0 -a 2 -m 4 -o 0.5 -uv 0.4 -x 10 -y 10 -r 0.8
+
+ffmpeg  -i 2560-1920.h264 -vcodec copy -f mp4 2560-1920.mp4
+
+ffmpeg  -i 1080P-scale.h264 -vcodec copy -f mp4 1080P-scale.mp4
+
+ffmpeg  -i 1080P-crop.h264 -vcodec copy -f mp4 1080P-crop.mp4
+
+ffmpeg  -i XXX.h264 -vcodec copy -f mp4 2560-1920.mp4
+
+/opt/vtcs_toolchain/vienna/usr/bin/arm-linux-objdump
+
+/opt/vtcs_toolchain/vienna/usr/bin/arm-linux-ldd 
+
+ 
+ffmpeg -i 16K-2.mp3 -ar 16000 -ac 2 -acodec aac output.aac
+
+
+./volume_ctrl -i 0 -M 0 -v 100 =>-v 音量 0~100
+和Capture Boost
+./amixer cset numid=4,iface=MIXER,name='Capture boost' 1
+
+我用我們的相關sample code 拿你們的板子測試 調音量是有效果的
+你能先用sample code試試嗎
+
+audio capture
+./tinyaenc_mmap -d "hw:0,0" -r 8000 -C 0 -b 32000 -t 0 -S 0 -i 0 &
+audio playback
+./playback_example_mmap -d "hw:0,0" -r 8000 -c 2 -C 0 &
+
+./tinyaenc_mmap -d "hw:0,0" -r 8000 -C 1 -b 64000 -i 0 -m 0 &
+
+
+可用volume_ctrl來調音量
+./volume_ctrl -i 0 -M 0 -v 100 =>-v 音量 0~100
+
+如果覺得MIC音量不夠的話 可試試打開Boost
+./amixer cset numid=4,iface=MIXER,name='Capture boost' 1
+
+export LD_LIBRARY_PATH=/mnt/flash/vienna/lib
+
+cd /mnt/flash/vienna
+
+arecord -vv  -r16000 -fS16_LE -c 2 -t wav /tmp/test.wav 
+aplay -vv -r16000 -fS16_LE -c 2 -t wav /tmp/test.wav  &
+./arecord -Dhw:0,0
+
+amixer cset numid=4,iface=MIXER,name='Capture boost' 1
+amixer cset numid=2,iface=MIXER,name='Playback Volume Digital' 31
+amixer cset numid=1,iface=MIXER,name='Playback' 31
+
+./amixer cset numid=1,iface=MIXER,name='Playback Volume Digital' 128
+0~128
+
+amixer cset numid=2 31
+./volume_ctrl -v 90 -i 0 M 1
+./amixer cset numid=1 128
+
+./tinyaenc_mmap -d "hw:0,0" -r 8000 -C 0 -b 32000 -t 0 -S 0 -i 0 &
+./playback_example_mmap -d "hw:0,0" -r 8000 -c 2 -C 0 &
+
+echo 41 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio41/direction
+echo 1 > /sys/class/gpio/gpio41/value
+
+./asc_msg_sender -e 10 -g
+
+/mnt/flash/etc/rc.local
